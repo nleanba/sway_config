@@ -21,8 +21,8 @@ set $term gnome-terminal
 # Your preferred application launcher
 # Note: it's recommended that you pass the final command to sway
 # set $menu dmenu_path | dmenu | xargs swaymsg exec --
-set $menu wofi --show drun | xargs swaymsg exec --
-set $menuall wofi --show run | xargs swaymsg exec --
+set $menu wofi -S drun -n -s ~/.config/sway/wofi_styles.css | xargs swaymsg exec --
+set $menuall wofi -S run -n -s ~/.config/sway/wofi_styles.css | xargs swaymsg exec --
 
 ### Output configuration
 #
@@ -44,6 +44,8 @@ exec swayidle -w \
     timeout 600 'swaymsg "output * dpms off"' \
         resume 'swaymsg "output * dpms on"' \
     before-sleep 'swaylock -f -c 000000'
+
+bindsym $mod+g exec lock-screen-off
 
 # This will lock your screen after 300 seconds of inactivity, then turn off
 # your displays after another 300 seconds, and turn your screens back on when
