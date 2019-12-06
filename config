@@ -7,7 +7,7 @@
 ### Variables
 #
 # Logo key. Use Mod1 for Alt.
-set $mod Mod1
+set $mod Mod4
 
 # Home row direction keys, like vim
 set $left h 
@@ -20,7 +20,9 @@ set $term gnome-terminal
 
 # Your preferred application launcher
 # Note: it's recommended that you pass the final command to sway
-set $menu dmenu_path | dmenu | xargs swaymsg exec --
+# set $menu dmenu_path | dmenu | xargs swaymsg exec --
+set $menu wofi --show drun | xargs swaymsg exec --
+set $menuall wofi --show run | xargs swaymsg exec --
 
 ### Output configuration
 #
@@ -35,14 +37,14 @@ output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 
 ### Idle configuration
 #
-# Example configuration:
-#
-# exec swayidle -w \
-#          timeout 300 'swaylock -f -c 000000' \
-#          timeout 600 'swaymsg "output * dpms off"' \
-#               resume 'swaymsg "output * dpms on"' \
-#          before-sleep 'swaylock -f -c 000000'
-#
+# Example configuration
+
+exec swayidle -w \
+    timeout 300 'swaylock -f -c 000000' \
+    timeout 600 'swaymsg "output * dpms off"' \
+        resume 'swaymsg "output * dpms on"' \
+    before-sleep 'swaylock -f -c 000000'
+
 # This will lock your screen after 300 seconds of inactivity, then turn off
 # your displays after another 300 seconds, and turn your screens back on when
 # resumed. It will also lock your screen before your computer goes to sleep.
@@ -58,6 +60,7 @@ input "1739:32382:DELL0740:00_06CB:7E7E_Touchpad" {
 
 input "1:1:AT_Translated_Set_2_keyboard" {
     xkb_layout ch
+    xkb_options caps:swapescape
 }
 
 # You can get the names of your inputs by running: swaymsg -t get_inputs
@@ -75,8 +78,9 @@ input "1:1:AT_Translated_Set_2_keyboard" {
 
     # Start your launcher
     bindsym $mod+d exec $menu
+    bindsym $mod+Shift+d exec $menuall
 
-    # Drag floating windows by holding down $mod and left mouse button.
+    # Drag windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
     # Despite the name, also works for non-floating windows.
     # Change normal to inverse to use left mouse button for resizing and right
@@ -88,6 +92,11 @@ input "1:1:AT_Translated_Set_2_keyboard" {
 
     # Exit sway (logs you out of your Wayland session)
     bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+
+# screen brightness controls
+bindsym XF86MonBrightnessUp exec light -A 5
+bindsym XF86MonBrightnessDown exec light -U 5
+
 #
 # Moving around:
 #
@@ -142,6 +151,16 @@ input "1:1:AT_Translated_Set_2_keyboard" {
 #
 # Layout stuff:
 #
+
+    default_border pixel 1
+    default_floating_border pixel 1
+    smart_gaps on
+    smart_borders on
+    gaps outer 4
+    gaps inner 4
+
+    for_window [app_id="gnome-mines"] border csd
+
     # You can "split" the current object of your focus with
     # $mod+b or $mod+v, for horizontal and vertical splits
     # respectively.
@@ -164,6 +183,17 @@ input "1:1:AT_Translated_Set_2_keyboard" {
 
     # Move focus to the parent container
     bindsym $mod+a focus parent
+
+#
+# Color Configuration:
+#
+# class                 border  backgr. text    indicator   child_border
+client.focused          #ebdbb2 #285577 #ebdbb2 #ebdbb2     #ebdbb2
+client.focused_inactive #888888 #5f676a #ffffff #404040     #888888
+client.unfocused        #888888 #222222 #888888 #404040     #888888
+client.urgent           #900000 #900000 #ffffff #900000     #900000
+client.placeholder      #0c0c0c #0c0c0c #ffffff #404040     #404040
+    
 #
 # Scratchpad:
 #
@@ -210,7 +240,7 @@ bar {
 
     # When the status_command prints a new line to stdout, swaybar updates.
     # The default just shows the current date and time.
-    status_command while ~/.dotfiles/swaybar.py ; do sleep 1 ;done
+    status_command ~/.dotfiles/swaybar.py
 
     colors {
         statusline #ffffff
