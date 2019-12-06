@@ -135,6 +135,8 @@ bindsym XF86MonBrightnessDown exec light -U 5
     bindsym $mod+8 workspace 8
     bindsym $mod+9 workspace 9
     bindsym $mod+0 workspace 10
+    bindsym $mod+Tab workspace next
+    bindsym $mod+Shift+Tab workspace prev
     # Move focused container to workspace
     bindsym $mod+Shift+1 move container to workspace 1
     bindsym $mod+Shift+2 move container to workspace 2
@@ -156,10 +158,10 @@ bindsym XF86MonBrightnessDown exec light -U 5
     default_floating_border pixel 1
     smart_gaps on
     smart_borders on
-    gaps outer 4
-    gaps inner 4
+    gaps outer 0
+    gaps inner 8
 
-    for_window [app_id="gnome-mines"] border csd
+    font "Fira Code" 10
 
     # You can "split" the current object of your focus with
     # $mod+b or $mod+v, for horizontal and vertical splits
@@ -237,10 +239,11 @@ bindsym $mod+r mode "resize"
 # Read `man 5 sway-bar` for more information about this section.
 bar {
     position top
+    pango_markup enabled
 
     # When the status_command prints a new line to stdout, swaybar updates.
     # The default just shows the current date and time.
-    status_command ~/.dotfiles/swaybar.py
+    status_command ~/.config/sway/swaybar.py
 
     colors {
         statusline #ffffff
