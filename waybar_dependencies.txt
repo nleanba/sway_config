@@ -1,0 +1,3 @@
+packages to install (ubuntu):
+
+sudo apt install libjsoncpp-dev libgtkmm-3.0-dev libinput-dev
