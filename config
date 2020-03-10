@@ -14,19 +14,47 @@
   # Your preferred terminal emulator
   set $term gnome-terminal
 
+  set $fexec exec --no-startup-id fish -c
+
   # Your preferred application launcher
   # Note: it's recommended that you pass the final command to sway
   # set $menu dmenu_path | dmenu | xargs swaymsg exec --
-  set $menu wofi -S drun -n -s ~/.config/sway/wofi_styles.css | xargs swaymsg exec --
-  set $menuall wofi -S run -n -s ~/.config/sway/wofi_styles.css | xargs swaymsg exec --
+  # set $menu wofi -S drun -n -s ~/.config/sway/wofi_styles.css | xargs swaymsg exec --
+  # set $menuall wofi -S run -n -s ~/.config/sway/wofi_styles.css | xargs swaymsg exec --
+  set $menu rofi -show drun | xargs swaymsg exec --
+  set $menuall rofi -show run | xargs swaymsg exec --
+  set $menussh rofi -show ssh
+  set $menuwindows rofi -show windowcd
 
 
-### Layout & Design
+### Design
 
   # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
   output * bg /usr/share/backgrounds/warty-final-ubuntu.png fill
 
-### Idle configurationna
+  set $cl_high #009ddc
+  set $cl_indi #d9d8d8
+  set $cl_back #231f20
+  set $cl_fore #d9d8d8
+  set $cl_urge #ee2e24
+
+  # Colors                border   bg       text     indi     childborder
+  client.focused          $cl_high $cl_high $cl_fore $cl_indi $cl_high
+  client.focused_inactive $cl_back $cl_back $cl_fore $cl_back $cl_back
+  client.unfocused        $cl_back $cl_back $cl_fore $cl_back $cl_back
+  client.urgent           $cl_urge $cl_urge $cl_fore $cl_urge $cl_urge
+
+  default_border pixel 1
+  default_floating_border pixel 1
+  smart_gaps on
+  smart_borders on
+  gaps outer 0
+  gaps inner 4
+
+  font "Fira Code" 12
+  #font "Work Sans" 10
+
+### Idle configuration
 #
 # Example configuration
 
@@ -47,9 +75,13 @@ bindsym $mod+g exec 'swaylock -C ~/.config/sway/swaylock.config'
 input "1739:32382:DELL0740:00_06CB:7E7E_Touchpad" {
     dwt enabled
     tap enabled
+    tap_button_map lrm
     natural_scroll enabled
     middle_emulation enabled
 }
+
+# Hide after       [  ] ms inactiity
+seat * hide_cursor 6000
 
 input "1:1:AT_Translated_Set_2_keyboard" {
     xkb_layout ch
@@ -65,6 +97,7 @@ input "1:1:AT_Translated_Set_2_keyboard" {
 #
     # Start a terminal
     bindsym $mod+Return exec $term
+    bindsym Control+Alt+T exec $term
 
     # Kill focused window
     bindsym $mod+Shift+q kill
@@ -72,6 +105,8 @@ input "1:1:AT_Translated_Set_2_keyboard" {
     # Start your launcher
     bindsym $mod+d exec $menu
     bindsym $mod+Shift+d exec $menuall
+    bindsym $mod+Shift+s exec $menussh
+    bindsym $mod+Escape exec $menuwindows
 
     # Drag windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -91,9 +126,21 @@ bindsym XF86MonBrightnessUp exec light -A 5
 bindsym XF86MonBrightnessDown exec light -U 5
 
 # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5%
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5%
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute        exec --no-startup-id pactl set-sink-mute   @DEFAULT_SINK@ toggle
+
+# Screenshot
+    bindsym Print       exec --no-startup-id grim "$HOME/Pictures/Screenshots/screenshot-$(date '+%F-%H%M%S').png"
+
+    # Screenshot region
+    bindsym $mod+Print  exec --no-startup-id grim -g "$(slurp)" "$HOME/Pictures/Screenshots/screenshot-$(date '+%F-%H%M%S').png"
+
+    # Screensĥot current output
+    bindsym Shift+Print exec --no-startup-id grim -o $(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name') "$HOME/Pictures/Screenshots/screenshot-$(date '+%F-%H%M%S').png"
+
+    # Screenshot current window // NOT WORKING YET
+    bindsym $mod+P exec --no-startup-id grim -g "$(swaymsg -t get_tree | jq -r '.. | select(.focused?) | .rect | "\(.x),\(.y) \(.width)x\(.height)"')" "$HOME/Pictures/Screenshots/screenshot-$(date '+%F-%H%M%S').png"
 
 #
 # Moving around:
@@ -108,6 +155,11 @@ bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle
     bindsym $mod+Down focus down
     bindsym $mod+Up focus up
     bindsym $mod+Right focus right
+    # Or use Right Control+[up|down|left|right]
+    bindsym Control_R+Left focus left
+    bindsym Control_R+Down focus down
+    bindsym Control_R+Up focus up
+    bindsym Control_R+Right focus right
 
     # Move the focused window with the same, but add Shift
     bindsym $mod+Shift+$left move left
@@ -119,6 +171,11 @@ bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle
     bindsym $mod+Shift+Down move down
     bindsym $mod+Shift+Up move up
     bindsym $mod+Shift+Right move right
+    # Ditto, with arrow keys
+    bindsym Control_R+Shift+Left move left
+    bindsym Control_R+Shift+Down move down
+    bindsym Control_R+Shift+Up move up
+    bindsym Control_R+Shift+Right move right
 #
 # Workspaces:
 #
@@ -152,15 +209,6 @@ bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle
 # Layout stuff:
 #
 
-    default_border pixel 1
-    default_floating_border pixel 1
-    smart_gaps on
-    smart_borders on
-    gaps outer 0
-    gaps inner 8
-
-    font "Fira Code" 12
-
     # You can "split" the current object of your focus with
     # $mod+b or $mod+v, for horizontal and vertical splits
     # respectively.
@@ -184,16 +232,13 @@ bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle
     # Move focus to the parent container
     bindsym $mod+a focus parent
 
-#
-# Color Configuration:
-#
-# class                 border  backgr. text    indicator   child_border
-client.focused          #ebdbb2 #285577 #ebdbb2 #ebdbb2     #ebdbb2
-client.focused_inactive #888888 #5f676a #ffffff #404040     #888888
-client.unfocused        #888888 #222222 #888888 #404040     #888888
-client.urgent           #900000 #900000 #ffffff #900000     #900000
-client.placeholder      #0c0c0c #0c0c0c #ffffff #404040     #404040
-    
+    for_window [app_id="org.gnome.Nautilus"] floating enable
+    for_window [app_id="epiphany-snake-90ec00c2b9ab0a18dd4535ea1d8d4b947564ae72"] {
+        floating enable
+        resize set height 849 px
+        resize set width 798 px
+    }
+ 
 #
 # Scratchpad:
 #
@@ -249,5 +294,13 @@ bar {
         inactive_workspace #32323200 #32323200 #5c5c5c
     }
 }
+
+#enabling this mainly as the pwoer button otherwise shuts down without warning
+exec --no-startup-id /usr/lib/gnome-settings-daemon/gsd-xsettings
+exec --no-startup-id /usr/lib/gnome-settings-daemon/gsd-keyboard
+exec --no-startup-id /usr/lib/gnome-settings-daemon/gsd-mouse
+exec --no-startup-id /usr/lib/gnome-settings-daemon/gsd-media-keys
+exec --no-startup-id /usr/lib/gnome-settings-daemon/gsd-sound
+exec --no-startup-id /usr/lib/gnome-settings-daemon/gsd-backlight-helper
 
 include /etc/sway/config.d/*
