@@ -58,11 +58,11 @@
 #
 # Example configuration
 
-exec swayidle -w \
-    timeout 300 'swaylock -C ~/.config/sway/swaylock.config' \
-    timeout 600 'swaymsg "output * dpms off"' \
-        resume 'swaymsg "output * dpms on"' \
-    before-sleep 'swaylock -C ~/.config/sway/swaylock.config'
+#exec swayidle -w \
+#    timeout 300 'swaylock -C ~/.config/sway/swaylock.config' \
+#    timeout 600 'swaymsg "output * dpms off"' \
+#        resume 'swaymsg "output * dpms on"' \
+#    before-sleep 'swaylock -C ~/.config/sway/swaylock.config'
 
 bindsym $mod+g exec 'swaylock -C ~/.config/sway/swaylock.config'
 
@@ -79,6 +79,8 @@ input "1739:32382:DELL0740:00_06CB:7E7E_Touchpad" {
     natural_scroll enabled
     middle_emulation enabled
 }
+
+exec /home/noam/.cargo/bin/rot8
 
 # Hide after       [  ] ms inactiity
 seat * hide_cursor 6000
