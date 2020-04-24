@@ -21,10 +21,10 @@
   # set $menu dmenu_path | dmenu | xargs swaymsg exec --
   # set $menu wofi -S drun -n -s ~/.config/sway/wofi_styles.css | xargs swaymsg exec --
   # set $menuall wofi -S run -n -s ~/.config/sway/wofi_styles.css | xargs swaymsg exec --
-  set $menu rofi -show drun | xargs swaymsg exec --
-  set $menuall rofi -show run | xargs swaymsg exec --
-  set $menussh rofi -show ssh
-  set $menuwindows rofi -show windowcd
+  set $menu        rofi -show drun   -config ~/.config/sway/rofi.config | xargs swaymsg exec --
+  set $menuall     rofi -show run    -config ~/.config/sway/rofi.config | xargs swaymsg exec --
+  set $menussh     rofi -show ssh    -config ~/.config/sway/rofi.config | xargs swaymsg exec --
+  set $menuwindows rofi -show window -config ~/.config/sway/rofi.config
 
 
 ### Design
@@ -52,9 +52,9 @@
   gaps inner 4
 
   font "Fira Code" 12
-  #font "Work Sans" 10
+  #font "Terminus" 12
 
-### Idle configuration
+### Idle configCurationC
 #
 # Example configuration
 
