@@ -30,7 +30,7 @@
 ### Design
 
   # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-  output * bg /usr/share/backgrounds/warty-final-ubuntu.png fill
+  output * bg /usr/share/backgrounds/matt-mcnulty-nyc-2nd-ave.jpg fill
 
   set $cl_high #009ddc
   set $cl_indi #d9d8d8
@@ -291,9 +291,10 @@ bar {
     status_command ~/.config/sway/swaybar.py
 
     colors {
-        statusline #ffffff
-        background #323232
-        inactive_workspace #32323200 #32323200 #5c5c5c
+        statusline #d3d7cf
+        background #282C33
+        inactive_workspace #282C33 #282C33 #d3d7cf
+        focused_workspace #262626 #262626 #d3d7cf
     }
 }
 
