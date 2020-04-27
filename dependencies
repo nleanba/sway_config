@@ -1,5 +1,13 @@
 # PACKAGE NAMES UBUNTU 20.04
 
-python3
-rofi
 fonts-firacode
+
+# Statusbar
+python3
+
+# Application menu
+rofi
+
+# Screenshots
+grim
+slurp

@@ -47,6 +47,7 @@ window {
     width:		 512px;
     orientation: horizontal;
     children:	 [mainbox];
+    border: 0 1px 0 0;
 }
 
 mainbox {

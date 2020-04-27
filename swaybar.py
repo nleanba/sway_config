@@ -74,4 +74,4 @@ def refresh():
 
 while True:
     refresh()
-    sleep(.6)
+    sleep(.5)
