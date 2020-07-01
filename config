@@ -49,26 +49,29 @@
   smart_gaps on
   smart_borders on
   gaps outer 0
-  gaps inner 4
+  gaps inner 0
 
-  font "Fira Code" 12
+  #font "Fira Code" 12
   #font "Terminus" 12
+  font "Iosevka" 12
 
-### Idle configCurationC
+### Idle configuration
 #
 # Example configuration
 
-#exec swayidle -w \
-#    timeout 300 'swaylock -C ~/.config/sway/swaylock.config' \
-#    timeout 600 'swaymsg "output * dpms off"' \
-#        resume 'swaymsg "output * dpms on"' \
-#    before-sleep 'swaylock -C ~/.config/sway/swaylock.config'
+exec swayidle -w \
+    timeout 300 'swaylock -C ~/.config/sway/swaylock.config' \
+    timeout 600 'swaymsg "output * dpms off"' \
+        resume 'swaymsg "output * dpms on"' \
+    before-sleep 'swaylock -C ~/.config/sway/swaylock.config'
 
 bindsym $mod+g exec 'swaylock -C ~/.config/sway/swaylock.config'
 
 # This will lock your screen after 300 seconds of inactivity, then turn off
 # your displays after another 300 seconds, and turn your screens back on when
 # resumed. It will also lock your screen before your computer goes to sleep.
+
+# output HDMI-A-1 pos 0 0 res 3840 2160
 
 ### Input configuration
 
@@ -80,14 +83,14 @@ input "1739:32382:DELL0740:00_06CB:7E7E_Touchpad" {
     middle_emulation enabled
 }
 
-exec /home/noam/.cargo/bin/rot8
+# exec /home/noam/.cargo/bin/rot8
 
 # Hide after       [  ] ms inactiity
 seat * hide_cursor 6000
 
-input "1:1:AT_Translated_Set_2_keyboard" {
+input type:keyboard {
     xkb_layout ch
-    xkb_options caps:swapescape
+    xkb_options caps:swapescape,compose:menu
 }
 
 # You can get the names of your inputs by running: swaymsg -t get_inputs
@@ -181,32 +184,53 @@ bindsym XF86AudioMute        exec --no-startup-id pactl set-sink-mute   @DEFAULT
 #
 # Workspaces:
 #
+    set $w0 '0:§_STRT'
+    set $w1 '1:1_WRK0'
+    set $w2 '2:2_WRK1'
+    set $w3 '3:3_WRK2'
+    set $w4 '4:4_WRK3'
+    set $w5 '5:5_EDU0'
+    set $w6 '6:6_EDU1'
+    set $w7 '7:7_EDU2'
+    set $w8 '8:8_EDU3'
+    set $w9 '9:9_IDC0'
+    set $w10 '10:0_IDC1'
+    set $w11 "11:'_IDC2"
+    set $w12 '12:^_IDC3'
+
     # Switch to workspace
-    bindsym $mod+1 workspace 1
-    bindsym $mod+2 workspace 2
-    bindsym $mod+3 workspace 3
-    bindsym $mod+4 workspace 4
-    bindsym $mod+5 workspace 5
-    bindsym $mod+6 workspace 6
-    bindsym $mod+7 workspace 7
-    bindsym $mod+8 workspace 8
-    bindsym $mod+9 workspace 9
-    bindsym $mod+0 workspace 0
+    bindsym $mod+section workspace $w0
+    bindsym $mod+1 workspace $w1
+    bindsym $mod+2 workspace $w2
+    bindsym $mod+3 workspace $w3
+    bindsym $mod+4 workspace $w4
+    bindsym $mod+5 workspace $w5
+    bindsym $mod+6 workspace $w6
+    bindsym $mod+7 workspace $w7
+    bindsym $mod+8 workspace $w8
+    bindsym $mod+9 workspace $w9
+    bindsym $mod+0 workspace $w10
+    bindsym $mod+apostrophe workspace $w11
+    bindsym $mod+dead_circumflex workspace $w12
     bindsym $mod+Tab workspace next
     bindsym $mod+Shift+Tab workspace prev
     # Move focused container to workspace
-    bindsym $mod+Shift+1 move container to workspace 1
-    bindsym $mod+Shift+2 move container to workspace 2
-    bindsym $mod+Shift+3 move container to workspace 3
-    bindsym $mod+Shift+4 move container to workspace 4
-    bindsym $mod+Shift+5 move container to workspace 5
-    bindsym $mod+Shift+6 move container to workspace 6
-    bindsym $mod+Shift+7 move container to workspace 7
-    bindsym $mod+Shift+8 move container to workspace 8
-    bindsym $mod+Shift+9 move container to workspace 9
-    bindsym $mod+Shift+0 move container to workspace 0
+    bindsym $mod+Shift+section move container to workspace $w0
+    bindsym $mod+Shift+1 move container to workspace $w1
+    bindsym $mod+Shift+2 move container to workspace $w2
+    bindsym $mod+Shift+3 move container to workspace $w3
+    bindsym $mod+Shift+4 move container to workspace $w4
+    bindsym $mod+Shift+5 move container to workspace $w5
+    bindsym $mod+Shift+6 move container to workspace $w6
+    bindsym $mod+Shift+7 move container to workspace $w7
+    bindsym $mod+Shift+8 move container to workspace $w8
+    bindsym $mod+Shift+9 move container to workspace $w9
+    bindsym $mod+Shift+0 move container to workspace $w10
+    bindsym $mod+Shift+apostrophe move container to workspace $w11
+    bindsym $mod+Shift+dead_circumflex move container to workspace $w12
     # Note: workspaces can have any name you want, not just numbers.
     # We just use 1-10 as the default.
+
 #
 # Layout stuff:
 #
@@ -235,6 +259,7 @@ bindsym XF86AudioMute        exec --no-startup-id pactl set-sink-mute   @DEFAULT
     bindsym $mod+a focus parent
 
     for_window [app_id="org.gnome.Nautilus"] floating enable
+    for_window [app_id="org.gnome.baobab"] floating enable
     for_window [app_id="epiphany-snake-90ec00c2b9ab0a18dd4535ea1d8d4b947564ae72"] {
         floating enable
         resize set height 849 px
@@ -285,6 +310,7 @@ bindsym $mod+r mode "resize"
 bar {
     position top
     pango_markup enabled
+    strip_workspace_numbers yes
 
     # When the status_command prints a new line to stdout, swaybar updates.
     # The default just shows the current date and time.

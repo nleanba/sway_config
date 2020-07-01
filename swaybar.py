@@ -24,9 +24,11 @@ def nice_bat(percent):
     return '◪◩◪◩'
 
 def nice_vol(percent):
+    if percent > 100:
+        return '▶◀'
     fourth = int(round(percent * 4 / 100))
     mapping = ['□□','◧□','■□','■◧','■■']
-    if fourth <= 8 and fourth >= 0:
+    if fourth <= 4 and fourth >= 0:
         return mapping[fourth]
     return '◪◩'
 
@@ -39,7 +41,7 @@ def refresh():
     except Exception:
         ssid = 'No Internet'
     try:
-        v = search(r"\[(\d{1,3})%\].*\[on\]", check_output(['amixer','get','Master']).decode('utf-8'))
+        v = search(r"Volume:.*([\d\s]{3})%", check_output(['pactl', 'list', 'sinks']).decode('utf-8'))
         if v:
             volume = v.group(1).rjust(2, '0').rjust(3)
             nvol = nice_vol(int(volume))
@@ -49,7 +51,7 @@ def refresh():
     except Exception:
         volume = ' --'
         nvol = '◪◩'
-    ssid = ssid.ljust(20)
+    ssid = ssid.ljust(25)
     bat_sens = sensors_battery()
     if bat_sens:
         bat_percent = int(bat_sens.percent)
@@ -69,8 +71,15 @@ def refresh():
         bat_symbol = '◪◩◪◩'
         bat_status = ' '
         bat_time = ' ' * 10
+    try:
+        li = int(float(check_output("light", shell=True).strip().decode("utf-8")))
+        lisign = '☀' if li >= 50 else '☼'
+        light = str(li).rjust(3) + '% ' + lisign
+    except Exception:
+        light = ' ? % ☼'
+    
     date = datetime.now().strftime('%Y-%m-%d %a %H:%M:%S')
-    write(f"{nvol} {volume}% │ {ssid} │ {bat_symbol}{bat_status} {str(bat_percent).rjust(2, '0').rjust(3)}% {bat_time} │ {date}")
+    write(f"{ssid} │ {nvol} {volume}% │ {light} │ {bat_symbol}{bat_status} {str(bat_percent).rjust(2, '0').rjust(3)}% {bat_time} │ {date}")
 
 while True:
     refresh()
